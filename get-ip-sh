@@ -1,0 +1,22 @@
+#!/bin/sh
+# Stampa solo gli indirizzi IP per le interfacce date, restituisce 0.0.0.0 se l'interfaccia non esiste.
+
+get_ip() {
+    for int in "$@"; do
+        if ifconfig "$int" > /dev/null 2>&1; then
+            ip=$(ifconfig "$int" | grep "inet " | awk '{print $2}')
+            echo "$ip"
+        else
+            echo "0.0.0.0"
+        fi
+    done
+}
+
+# Usa eth0 se non viene data alcuna interfaccia
+INTERFACE="eth0"
+
+if [ "$#" -ne 0 ]; then
+    INTERFACE="$@"
+fi
+
+get_ip $INTERFACE
